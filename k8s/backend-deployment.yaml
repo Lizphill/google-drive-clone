@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
-metadata:
-  name: uploader-backend
+metadata: { name: uploader-backend }
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      app: uploader
+  selector: { matchLabels: { app: uploader-backend } }
   template:
-    metadata:
-      labels:
-        app: uploader
+    metadata: { labels: { app: uploader-backend } }
     spec:
       containers:
       - name: backend
         image: file-uploader-backend:latest
-        ports:
-        - containerPort: 5000
-        volumeMounts:
-        - name: storage
-          mountPath: /data
+        imagePullPolicy: Never
+        ports: [{ containerPort: 5000 }]
+        volumeMounts: [{ name: storage, mountPath: /data }]
       volumes:
       - name: storage
         persistentVolumeClaim:
-          claimName: uploader-pvc
+          claimName: file-storage-pvc
+---
+apiVersion: v1
+kind: Service
+metadata: { name: uploader-backend-svc }
+spec:
+  selector: { app: uploader-backend }
+  ports: [{ port: 5000, targetPort: 5000 }]

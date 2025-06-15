@@ -1,11 +1,20 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: uploader-pv
+  name: file-storage-pv
 spec:
   capacity:
     storage: 1Gi
-  accessModes:
-    - ReadWriteOnce
+  accessModes: ["ReadWriteOnce"]
   hostPath:
-    path: /mnt/data
+    path: /tmp/data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: file-storage-pvc
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 1Gi
